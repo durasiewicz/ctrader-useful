@@ -8,42 +8,17 @@ namespace cAlgo
     [Indicator(IsOverlay = true, TimeZone = TimeZones.UTC, AccessRights = AccessRights.None)]
     public class Base : Indicator
     {
-        /// <summary>
-        /// Upper zone line name prefix.
-        /// </summary>
         private readonly string _upperZoneLinePrefix = "up-zone-line-";
-        
-        /// <summary>
-        /// Lower zone line name prefix.
-        /// </summary>
         private readonly string _lowerZoneLinePrefix = "low-zone-line-";
-        
-        /// <summary>
-        /// Dark color for zone lines.
-        /// </summary>
         private readonly Color _darkColor = Color.Black;
-        
-        /// <summary>
-        /// Light color for zone lines.
-        /// </summary>
         private readonly Color _lightColor = Color.White;
 
-        /// <summary>
-        /// Predefined colors for both light and dark chart themes.
-        /// </summary>
         private Color IndicatorColor
         {
             get { return Chart.ColorSettings.BackgroundColor == Color.Black ? _lightColor : _darkColor; }
         }
 
-        /// <summary>
-        /// Stores last scroll position. It's need to be static, beacuse cTrader creates new indicator instance on timeframe change.
-        /// </summary>
         private static readonly ConcurrentDictionary<string, DateTime> s_firstVisibleBarDateTime = new ConcurrentDictionary<string, DateTime>();
-        
-        /// <summary>
-        /// Predefined timeframes.
-        /// </summary>
         private static readonly TimeFrame[] s_switchableTimeFrames = new TimeFrame[] 
         {
             TimeFrame.Minute,
@@ -81,10 +56,6 @@ namespace cAlgo
             InitCustomGui();
         }
 
-        /// <summary>
-        /// Base events and existing objects initialization.
-        /// </summary>
-        /// <returns></returns>
         private void InitBaseHandlers()
         {
             Chart.ObjectsAdded += Chart_ObjectsAdded;
@@ -98,10 +69,6 @@ namespace cAlgo
             }
         }
 
-        /// <summary>
-        /// Creates button for chart scrolling to beginning and some useful shortcuts for timeframe changing.
-        /// </summary>
-        /// <returns></returns>
         private void InitCustomGui()
         {
             var scrollButton = new Button 
@@ -128,11 +95,6 @@ namespace cAlgo
             Chart.AddControl(intervalButton);
         }
 
-        /// <summary>
-        /// Changes timeframe based on predefined array.
-        /// </summary>
-        /// <param name="shift">Predefined timeframe slots shift. Value > 0 changes to bigger timeframe; Value < 0 changes to lower timeframe</param>
-        /// <returns></returns>
         private void SetTimeFrame(int shift)
         {
             var currentTimeFrameIndex = -1;
@@ -157,10 +119,6 @@ namespace cAlgo
             Chart.TryChangeTimeFrame(s_switchableTimeFrames[currentTimeFrameIndex]);
         }
 
-        /// <summary>
-        /// Restores scroll position after timeframe change.
-        /// </summary>
-        /// <returns>True when scroll is on the original position</returns>
         private bool SetScroll()
         {
             var result = true;
@@ -184,11 +142,6 @@ namespace cAlgo
             return result;
         }
 
-        /// <summary>
-        /// Updates zone lines associated to selected rectangle.
-        /// </summary>
-        /// <param name="args">Updated objects event args</param>
-        /// <returns></returns>
         private void Chart_ObjectsUpdated(ChartObjectsUpdatedEventArgs args)
         {
             foreach (var obj in args.ChartObjects)
@@ -198,11 +151,6 @@ namespace cAlgo
             }
         }
         
-        /// <summary>
-        /// Deletes zone lines associated to selected rectangle.
-        /// </summary>
-        /// <param name="args">Removed objects event args</param>
-        /// <returns></returns>
         private void Chart_ObjectsRemoved(ChartObjectsRemovedEventArgs args)
         {
             foreach (var obj in args.ChartObjects)
@@ -215,19 +163,8 @@ namespace cAlgo
             }
         }
 
-        /// <summary>
-        /// Visible fibonacci retracement levels.
-        /// </summary>
         private static readonly double[] s_visibleFibLevels = new double[] { 0, 50, 100 };
 
-        /// <summary>
-        /// Configures created objects.
-        /// 
-        /// 1. For rectangle creates zone lines (for Supply and Demand technical analysis),
-        /// 2. For fibonacci retracment changes default parameters to prefered by me (cTrader can't save this on its own (: ).
-        /// </summary>
-        /// <param name="args">Created charts objects event</param>
-        /// <returns></returns>
         private void Chart_ObjectsAdded(ChartObjectsAddedEventArgs args)
         {
             foreach (var obj in args.ChartObjects)
@@ -252,11 +189,6 @@ namespace cAlgo
             }
         }
 
-        /// <summary>
-        /// Creates or updates zone lines for rectangle.
-        /// </summary>
-        /// <param name="rect">Rectangle object</param>
-        /// <returns></returns>
         private void AddOrUpdateZoneLines(ChartRectangle rect)
         {
             DateTime startTime;
@@ -280,11 +212,6 @@ namespace cAlgo
             rect.IsFilled = true;
         }
 
-        /// <summary>
-        /// Nothing interesting. It's only required by contract.
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
         public override void Calculate(int index)
         {
             // empty
