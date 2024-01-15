@@ -214,7 +214,14 @@ namespace cAlgo
 
         public override void Calculate(int index)
         {
-            // empty
+            var currentBar = Bars[index];
+            
+            if (currentBar.High - currentBar.Low <= 0 || Math.Abs(currentBar.Open - currentBar.Close) / Math.Abs(currentBar.High - currentBar.Low) >= 0.5)
+            {
+                return;
+            }
+            
+            Chart.SetBarColor(index, IndicatorColor);
         }
     }
 }
